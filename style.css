@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Londrina+Sketch&family=Sixtyfour+Convergence&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    margin: 0;
+    padding: 16px;
+    background-color: #d8f3dc;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: solid rgba(76, 175, 80, 0.2);
+    ;
+}
+
+h1 {
+    font-family: "Londrina Sketch", sans-serif;
+    color: #081C15;
+    padding: 0;
+    margin: 0;
+    font-size: 46px;
+}
+
+.login-container {
+    margin-top: 100px;
+    display: flex;
+    justify-content: center;
+}
+
+.login-message {
+    text-align: center;
+}
+
+.input-container {
+    width: 450px;
+    display: flex;
+    flex-direction: column;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: center;
+}
+
+.btn {
+    background-color: #40916c;
+    border: none;
+    color: white;
+    padding: 12px 22px;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn:hover {
+    background-color: #74C69D;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+#btn-logout {
+    background-color: #bc4749;
+}
+
+#btn-logout:hover {
+    background-color: #c7686a
+}
+
+.input-field {
+    padding: 12px 15px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.input-field:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.2);
+    outline: none;
+}
+
+.board-container {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+}
+
+#board-dropdown {
+    padding: 10px 15px;
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    background-color: white;
+    font-size: 16px;
+    color: #333;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+#board-dropdown:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+#board-dropdown option {
+    padding: 10px;
+    font-size: 16px;
+}
+
+.notes-center {
+    border: 1px solid black;
+    border-radius: 10px;
+    margin: 50px;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+}
+
+.notes-container {
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+
+.note {
+    margin: 10px;
+    padding: 10px;
+    border: 2px solid rgba(76, 175, 80, 0.2);
+    border-radius: 8px;
+    height: 300px;
+    width: 200px;
+}
+
+.note-btn-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.note-btn {
+    width: 10px;
+    height: 10px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.grey-note-btn {
+    background-color: grey;
+}
+
+.green-note-btn {
+    background-color: green;
+}
+
+.delete-note-btn {
+    background-color: red;
+}
+
+.note-input {
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+    resize: none;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    overflow-y: auto;
+}
