@@ -1,8 +1,10 @@
 // This is replaced when deploying
 const API_URL = "http://localhost:8080";
-// const WS_URL = `ws://localhost:5000?token=${WS_TOKEN}`
 
-// Create user
+
+/* API calls */
+
+// Skapa användare
 export async function createUser(user, pass) {
     const response = await fetch(`${API_URL}/users/`, {
         method: "POST",
@@ -22,8 +24,7 @@ export async function createUser(user, pass) {
     return respData;
 }
 
-// Log in
-// Checks JWT and saves it in Local Storage
+// Logga in
 export async function logIn(user, pass) {
     const response = await fetch(`${API_URL}/users/login`, {
         method: "POST",
@@ -43,7 +44,7 @@ export async function logIn(user, pass) {
     return respData;
 }
 
-// Get boards for the user
+// Ta emot alla boards för en användare
 export async function getBoards(jwtToken) {
     const response = await fetch(`${API_URL}/boards`, {
         method: "GET",
@@ -62,7 +63,7 @@ export async function getBoards(jwtToken) {
     return respData;
 }
 
-// Get all notes for a specific board
+// Ta emot alla notes för en specifik board
 export async function getBoardNotes(boardId, jwtToken) {
     const response = await fetch(`${API_URL}/notes/${boardId}`, {
         method: "GET",
@@ -81,7 +82,7 @@ export async function getBoardNotes(boardId, jwtToken) {
     return respData;
 }
 
-// Create note
+// Skapa note
 export async function createNote(boardId, jwtToken) {
     const response = await fetch(`${API_URL}/notes/${boardId}`, {
         method: "POST",
@@ -91,8 +92,9 @@ export async function createNote(boardId, jwtToken) {
         },
         body: JSON.stringify({
             content: "",
-            position: "{x: 10, y: 10}",
-            color: "white"
+            positionX: "100",
+            positionY: "100",
+            color: "orange"
         })
     });
 
@@ -105,19 +107,25 @@ export async function createNote(boardId, jwtToken) {
     return respData;
 }
 
-// Update note
-export async function updateNote(boardId, noteId, jwtToken, updatedContent, updatedPosition, updatedColor) {
+// Uppdatera note
+export async function updateNote(boardId, jwtToken, noteId, updatedContent, updatedPositionX, updatedPositionY, updatedColor) {
+    // Prepare the data to send in the request
+    const updateData = {};
+
+    // Sätter till values bara om dom finns
+    if (updatedContent !== undefined) updateData.content = updatedContent;
+    if (updatedPositionX !== undefined) updateData.positionX = updatedPositionX;
+    if (updatedPositionY !== undefined) updateData.positionY = updatedPositionY;
+    if (updatedColor !== undefined) updateData.color = updatedColor;
+
+    // Make the fetch request to update the note
     const response = await fetch(`${API_URL}/notes/${boardId}/${noteId}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${jwtToken}`
         },
-        body: JSON.stringify({
-            content: updatedContent,  // Update the content of the note
-            position: updatedPosition, // Update the position (can be x, y coordinates)
-            color: updatedColor        // Update the note's color
-        })
+        body: JSON.stringify(updateData)
     });
 
     if (!response.ok) {
@@ -129,7 +137,7 @@ export async function updateNote(boardId, noteId, jwtToken, updatedContent, upda
     return respData;
 }
 
-// Delete note
+// Ta bort note
 export async function deleteNote(boardId, noteId, jwtToken) {
     const response = await fetch(`${API_URL}/notes/${boardId}/${noteId}`, {
         method: "DELETE",
@@ -147,7 +155,7 @@ export async function deleteNote(boardId, noteId, jwtToken) {
     return respData;
 }
 
-// Check if the token in Local Storage is valid
+// Kolla om jwt-token i LocalStorage är giltig
 export async function checkTokenValidity() {
     const jwtToken = localStorage.getItem("jwtToken");
     if (!jwtToken) {
@@ -164,10 +172,10 @@ export async function checkTokenValidity() {
     if (response.ok) {
         const data = await response.json();
         getBoards(jwtToken);
-        return true; // Valid token
+        return true;
     } else {
         console.error("Invalid token!");
-        localStorage.removeItem("jwtToken"); // Remove invalid token
-        return false; // Invalid token
+        localStorage.removeItem("jwtToken");
+        return false;
     }
 }

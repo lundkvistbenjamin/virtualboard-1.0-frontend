@@ -9,7 +9,7 @@ import { getBoards } from "./api.js";
 
 /* UI functions */
 
-// Function to hide login and show page content instead
+// Visa logged in vy
 export const showLoggedIn = () => {
     loginContainer.style.display = "none";
     logoutContainer.style.display = "block";
@@ -18,7 +18,7 @@ export const showLoggedIn = () => {
     displayBoardDropdown();
 };
 
-// Function to hide page content and show login instead
+// Visa logged out vy
 export const showLoggedOut = () => {
     loginContainer.style.display = "flex";
     logoutContainer.style.display = "none";
@@ -26,6 +26,7 @@ export const showLoggedOut = () => {
     notesCenter.style.display = "none";
 };
 
+// Visa board dropdown
 export const displayBoardDropdown = async () => {
     const jwtToken = localStorage.getItem("jwtToken");
     const boards = await getBoards(jwtToken);
@@ -40,39 +41,22 @@ export const displayBoardDropdown = async () => {
     }
 };
 
-// Matade in min html i chatGPT
+// Visa en note
 export const displayNote = (note) => {
-    // id finns i note.id
-    // innehåll finns i note.content
-    // position finns i note.position
-    // färg finns i note.color
-    const noteDiv = document.createElement("div");
-    noteDiv.id = note.id;
-    noteDiv.classList.add("note");
-    const btnContainerDiv = document.createElement("div");
-    btnContainerDiv.classList.add("note-btn-container");
-    const greyNoteBtn = document.createElement("button");
-    greyNoteBtn.classList.add("note-btn", "grey-note-btn");
-    const greenNoteBtn = document.createElement("button");
-    greenNoteBtn.classList.add("note-btn", "green-note-btn");
-    const deleteNoteBtn = document.createElement("button");
-    deleteNoteBtn.classList.add("note-btn", "delete-note-btn");
-    const buttonGroupDiv = document.createElement("div");
-    buttonGroupDiv.appendChild(greyNoteBtn);
-    buttonGroupDiv.appendChild(greenNoteBtn);
-    btnContainerDiv.appendChild(buttonGroupDiv);
-    btnContainerDiv.appendChild(deleteNoteBtn);
-    const contentDiv = document.createElement("div");
-    contentDiv.classList.add("note-content");
-    const textarea = document.createElement("textarea");
-    textarea.classList.add("note-input");
-    textarea.value = note.content;
-    contentDiv.appendChild(textarea);
-    noteDiv.appendChild(btnContainerDiv);
-    noteDiv.appendChild(contentDiv);
-    notesContainer.appendChild(noteDiv);
+    const noteHTML = `
+        <div id="${note.id}" class="note ${note.color}" style="transform: translate(${note.positionX}px, ${note.positionY}px); cursor: move;" data-x="${note.positionX}" data-y="${note.positionY}">
+            <div class="button-container">
+                <button class="note-btn orange-note-btn"></button>
+                <button class="note-btn green-note-btn"></button>
+                <button class="note-btn delete-note-btn"></button>
+            </div>
+            <textarea class="note-input" placeholder="Skriv note här...">${note.content || ''}</textarea>
+        </div>
+    `;
+    notesContainer.innerHTML += noteHTML;
 };
 
+// Visa alla notes
 export const displayAllNotes = (notes) => {
     notesContainer.innerText = "";
     notes.forEach(note => {
@@ -80,10 +64,10 @@ export const displayAllNotes = (notes) => {
     });
 };
 
-// Function to remove the note from the UI
+// Ta bort note från skärmen
 export const deleteNoteFromUI = (noteId) => {
     const noteElement = document.getElementById(noteId);
     if (noteElement) {
-        noteElement.remove(); // Remove note element from the DOM
+        noteElement.remove();
     }
 };
