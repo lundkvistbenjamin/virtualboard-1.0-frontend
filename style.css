@@ -28,6 +28,10 @@ h1 {
     justify-content: center;
 }
 
+.logout-container {
+    display: none;
+}
+
 .login-message {
     text-align: center;
 }
@@ -86,11 +90,12 @@ h1 {
 
 .board-container {
     margin-top: 50px;
-    display: flex;
+    display: none;
     justify-content: center;
 }
 
 #board-dropdown {
+    margin-right: 30px;
     padding: 10px 15px;
     border: 2px solid #007bff;
     border-radius: 5px;
@@ -106,16 +111,15 @@ h1 {
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
-#board-dropdown option {
-    padding: 10px;
-    font-size: 16px;
-}
-
 .notes-center {
-    border: 1px solid black;
+    display: none;
+    justify-content: center;
+    border: 2px solid rgba(76, 175, 80, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
-    margin: 50px;
+    margin: 50px auto;
     height: 600px;
+    max-width: 1200px;
 }
 
 .notes-container {
@@ -126,8 +130,9 @@ h1 {
 
 .note {
     position: absolute;
-    padding: 10px;
+    padding: 5px 10px 10px 10px;
     border: 2px solid rgba(76, 175, 80, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     height: 300px;
     width: 200px;
@@ -135,14 +140,19 @@ h1 {
 }
 
 .note-btn-container {
+    margin-bottom: 4px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
+.note-btn-container button:first-child {
+    margin-right: 10px;
+}
+
 .note-btn {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -150,17 +160,14 @@ h1 {
 
 .orange-note-btn {
     background-color: #FFA500;
-    /* orange */
 }
 
 .green-note-btn {
     background-color: #008000;
-    /* green */
 }
 
 .delete-note-btn {
     background-color: #FF0000;
-    /* red */
 }
 
 .note-input {
@@ -177,10 +184,8 @@ h1 {
 
 .green {
     background-color: #D8F3DC;
-    /* green */
 }
 
 .orange {
     background-color: #FFE4B5;
-    /* lighter orange */
 }

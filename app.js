@@ -1,9 +1,14 @@
-const loginMessage = document.querySelector(".login-message");
-
 import { createUser, logIn, getBoardNotes, createNote, updateNote, deleteNote, checkTokenValidity } from "./api.js";
 import { showLoggedIn, showLoggedOut, displayNote, displayAllNotes, deleteNoteFromUI } from "./UI.js";
 
+// This is replaced when deploying
+//const WS_URL = "ws://localhost:5000";
+const WS_URL = "wss:/virtualboard-websocket.azurewebsites.net";
+
+const loginMessage = document.querySelector(".login-message");
+
 let jwtToken = localStorage.getItem("jwtToken");
+
 
 /* WebSocket */
 
@@ -23,7 +28,7 @@ const connectWebsocket = (boardId, jwtToken) => {
     currentBoardId = boardId;
 
     // Skapa websocket connection
-    const socket = new WebSocket(`ws://localhost:5000?boardId=${boardId}&jwtToken=${jwtToken}`);
+    const socket = new WebSocket(`${WS_URL}?boardId=${boardId}&jwtToken=${jwtToken}`);
     currentSocket = socket;
 
     socket.onopen = async function (event) {
@@ -109,29 +114,38 @@ const handleLogin = async () => {
 
 // Skapa note
 const handleCreateNote = async () => {
-    const response = await createNote(currentBoardId, jwtToken);
-    displayNote(response.note);
+    try {
+        const response = await createNote(currentBoardId, jwtToken);
+        displayNote(response.note);
 
-    currentSocket.send(JSON.stringify({
-        status: 0,
-        type: "create",
-        note: response.note
-    }));
+        currentSocket.send(JSON.stringify({
+            status: 0,
+            type: "create",
+            note: response.note
+        }));
+    } catch (error) {
+        console.error("Error:", error);
+    }
 };
 
-// Radera note
+//Radera note
 const handleDeleteNote = async (event) => {
     if (event.target.classList.contains("delete-note-btn")) {
         const noteId = event.target.closest(".note").id;
-        const response = await deleteNote(currentBoardId, noteId, jwtToken);
-        if (response) {
-            deleteNoteFromUI(noteId);
 
-            currentSocket.send(JSON.stringify({
-                status: 0,
-                type: "delete",
-                note: { id: noteId }
-            }));
+        try {
+            const response = await deleteNote(currentBoardId, noteId, jwtToken);
+            if (response) {
+                deleteNoteFromUI(noteId);
+
+                currentSocket.send(JSON.stringify({
+                    status: 0,
+                    type: "delete",
+                    note: { id: noteId }
+                }));
+            }
+        } catch (error) {
+            console.error("Error:", error);
         }
     }
 };
@@ -142,14 +156,17 @@ const handleNoteInput = async (event) => {
         const noteId = event.target.closest(".note").id;
         let updatedContent = event.target.value;
 
-        const response = await updateNote(currentBoardId, jwtToken, noteId, updatedContent, undefined, undefined, undefined);
-
-        if (response) {
-            currentSocket.send(JSON.stringify({
-                status: 0,
-                type: "update",
-                note: response.note
-            }));
+        try {
+            const response = await updateNote(currentBoardId, jwtToken, noteId, updatedContent, undefined, undefined, undefined);
+            if (response) {
+                currentSocket.send(JSON.stringify({
+                    status: 0,
+                    type: "update",
+                    note: response.note
+                }));
+            }
+        } catch (error) {
+            console.error("Error:", error);
         }
     }
 };
@@ -161,36 +178,42 @@ const handleNoteColorChange = async (event) => {
         const noteId = noteElement.id;
         const newColor = event.target.classList.contains("orange-note-btn") ? "orange" : "green";
 
-        // Update the note's color in the backend
-        const response = await updateNote(currentBoardId, jwtToken, noteId, undefined, undefined, undefined, newColor);
-        console.log(response);
-        if (response) {
-            // Update the note's color in the UI
-            noteElement.classList.remove("orange", "green"); // Remove previous colors
-            noteElement.classList.add(newColor); // Add new color
+        try {
+            const response = await updateNote(currentBoardId, jwtToken, noteId, undefined, undefined, undefined, newColor);
+            if (response) {
+                noteElement.classList.remove("orange", "green");
+                noteElement.classList.add(newColor);
 
+                currentSocket.send(JSON.stringify({
+                    status: 0,
+                    type: "update",
+                    note: response.note
+                }));
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+};
+
+//Flytta på note
+const handleNoteMoved = async (event) => {
+    const { noteId, x, y } = event.detail;
+
+    try {
+        const response = await updateNote(currentBoardId, jwtToken, noteId, undefined, x, y, undefined);
+        if (response) {
             currentSocket.send(JSON.stringify({
                 status: 0,
                 type: "update",
                 note: response.note
             }));
         }
+    } catch (error) {
+        console.error("Error:", error);
     }
 };
 
-// Flytta på note
-const handleNoteMoved = async (event) => {
-    const { noteId, x, y } = event.detail;
-
-    const response = await updateNote(currentBoardId, jwtToken, noteId, undefined, x, y, undefined);
-    if (response) {
-        currentSocket.send(JSON.stringify({
-            status: 0,
-            type: "update",
-            note: response.note
-        }));
-    }
-};
 
 /* Event listeners */
 
@@ -212,14 +235,16 @@ document.querySelector("#board-dropdown").addEventListener("change", (event) => 
     connectWebsocket(boardId, jwtToken);
 });
 
+
 /* On load */
 
 // Kolla om JWT är giltig varje gång sidan refreshar
 window.onload = async () => {
-    const isValid = await checkTokenValidity();
+    const isValid = await checkTokenValidity(jwtToken);
     if (isValid) {
         showLoggedIn();
     } else {
+        localStorage.removeItem("jwtToken");
         showLoggedOut();
     }
 };

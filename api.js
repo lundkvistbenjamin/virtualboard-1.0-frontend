@@ -1,5 +1,6 @@
 // This is replaced when deploying
-const API_URL = "http://localhost:8080";
+//const API_URL = "http://localhost:8080";
+const API_URL = "https://virtualboard-backend.azurewebsites.net";
 
 
 /* API calls */
@@ -156,12 +157,10 @@ export async function deleteNote(boardId, noteId, jwtToken) {
 }
 
 // Kolla om jwt-token i LocalStorage är giltig
-export async function checkTokenValidity() {
-    const jwtToken = localStorage.getItem("jwtToken");
+export async function checkTokenValidity(jwtToken) {
     if (!jwtToken) {
         return false;
     }
-
     const response = await fetch(`${API_URL}/users/verify-token`, {
         method: "GET",
         headers: {
@@ -171,11 +170,9 @@ export async function checkTokenValidity() {
 
     if (response.ok) {
         const data = await response.json();
-        getBoards(jwtToken);
         return true;
     } else {
         console.error("Invalid token!");
-        localStorage.removeItem("jwtToken");
         return false;
     }
 }
