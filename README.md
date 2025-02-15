@@ -11,7 +11,7 @@ Clone the repository and follow the installation instructions for the respective
 
 ### Frontend:
 ```bash
-git clone https://github.com/lundkvistbenjamin/virtualboard-1.0-frontend.git
+git clone https://github.com/lundkvistbenjamin/virtualboard-frontend.git
 cd virtualboard-frontend
 npm install
 npm start
